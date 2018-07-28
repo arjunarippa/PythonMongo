@@ -1,0 +1,13 @@
+{
+  "DB":"EMP",
+  "Collection":"Employee",
+  "ConditionField":{
+    "Name":"Arjun"
+  },
+  "FieldsToAdd":{
+    "Married":"None",
+    "Company":"XYZ"
+  }
+}
+
+
