@@ -1,3 +1,21 @@
+########################################################################################################################
+#   File:
+#
+#   Description:
+#
+#   Input:
+#
+#   Author:
+#
+#   Contributors:
+#
+#   Change History:
+#
+#   Version         By                      Desc
+#   -------         --                      ----
+########################################################################################################################
+
+
 import pymongo, json, configparser, sys, os
 dbConfigFile = 'conf/database.conf'
 JSON_PATH = 'JSON/'
