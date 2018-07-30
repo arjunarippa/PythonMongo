@@ -15,7 +15,6 @@
 #   -------         --                      ----
 ########################################################################################################################
 
-
 import pymongo, json, configparser, sys, os
 dbConfigFile = 'conf/database.conf'
 JSON_PATH = 'JSON/'
@@ -27,13 +26,43 @@ DELETE_ONE = 'DeleteOne'
 UPDATE_FIELD = 'UpdateField'
 UPDATE_VALUE = 'UpdateValue'
 
+
+####################################################################################################################
+#   Class:
+#   Input:
+#   Output:
+#   Desc:
+####################################################################################################################
+
 class MongoDBUpdate():
+
+    ####################################################################################################################
+    #   Function:
+    #   Input:
+    #   Output:
+    #   Desc:
+    ####################################################################################################################
+
     def __init__(self):
         self.host = ""
         self.port = ""
 
+    ####################################################################################################################
+    #   Function:
+    #   Input:
+    #   Output:
+    #   Desc:
+    ####################################################################################################################
+
     def usage(self):
         print("Usage")
+
+    ####################################################################################################################
+    #   Function:
+    #   Input:
+    #   Output:
+    #   Desc:
+    ####################################################################################################################
 
     def _createConnection(self):
         config = configparser.ConfigParser()
@@ -50,6 +79,13 @@ class MongoDBUpdate():
 
         #db = client.database_name
 
+    ####################################################################################################################
+    #   Function:
+    #   Input:
+    #   Output:
+    #   Desc:
+    ####################################################################################################################
+
     def _checkIfJsonFileExists(self, action):
         fileNamePattern = action + JSON_EXTN
         # TODO
@@ -62,6 +98,12 @@ class MongoDBUpdate():
                 print("The required JSON file is not present in the JSON folder!!")
                 sys.exit(2)
 
+    ####################################################################################################################
+    #   Function:
+    #   Input:
+    #   Output:
+    #   Desc:
+    ####################################################################################################################
 
     def doMongoAddForOneDocument(self, action):
         print("Inside doMOngoAddForOneDocument")
@@ -88,6 +130,13 @@ class MongoDBUpdate():
             dbInstance.update_many({conditionKey:conditionValue}, {"$set": {key: value}}, True)
 
         print("Update complete!!")
+
+    ####################################################################################################################
+    #   Function:
+    #   Input:
+    #   Output:
+    #   Desc:
+    ####################################################################################################################
 
     def doMongoAddForAllDocuments(self, action):
         print("Inside doMOngoAddForAllDocuments")
@@ -117,35 +166,70 @@ class MongoDBUpdate():
 
         print("Update complete!!")
 
+    ####################################################################################################################
+    #   Function:
+    #   Input:
+    #   Output:
+    #   Desc:
+    ####################################################################################################################
+
     def doMongoDelete(self, action):
         # TODO
         pass
+
+    ####################################################################################################################
+    #   Function:
+    #   Input:
+    #   Output:
+    #   Desc:
+    ####################################################################################################################
 
     def doMongoUpdateField(self, action):
         # TODO
         pass
 
+    ####################################################################################################################
+    #   Function:
+    #   Input:
+    #   Output:
+    #   Desc:
+    ####################################################################################################################
+
     def doMongoUpdateValue(self, action):
         # TODO
         pass
 
+    ####################################################################################################################
+    #   Function:
+    #   Input:
+    #   Output:
+    #   Desc:
+    ####################################################################################################################
+
     def doCallMethod(self, action):
         print("in doCallMethod action is ", action)
         MongoInstance = MongoDBUpdate()
-        # return{
-        #     ADD_ALL:MongoInstance.doMongoAddForAllDocuments(action),
-        #     ADD_ONE:MongoInstance.doMongoAddForOneDocument(action),
-        #     DELETE_ALL:MongoInstance.doMongoDelete(action),
-        #     DELETE_ONE:MongoInstance.doMongoDelete(action),
-        #     UPDATE_FIELD:MongoInstance.doMongoUpdateField(action),
-        #     UPDATE_VALUE:MongoInstance.doMongoUpdateValue(action)
-        # }
-        if action == ADD_ONE:
-            MongoInstance.doMongoAddForOneDocument(action)
-        elif action == ADD_ALL:
-            MongoInstance.doMongoAddForAllDocuments(action)
-        else:
-            pass
+        return{
+            ADD_ALL:MongoInstance.doMongoAddForAllDocuments(action),
+            ADD_ONE:MongoInstance.doMongoAddForOneDocument(action),
+            DELETE_ALL:MongoInstance.doMongoDelete(action),
+            DELETE_ONE:MongoInstance.doMongoDelete(action),
+            UPDATE_FIELD:MongoInstance.doMongoUpdateField(action),
+            UPDATE_VALUE:MongoInstance.doMongoUpdateValue(action)
+        }[action]
+        # if action == ADD_ONE:
+        #     MongoInstance.doMongoAddForOneDocument(action)
+        # elif action == ADD_ALL:
+        #     MongoInstance.doMongoAddForAllDocuments(action)
+        # else:
+        #     pass
+
+########################################################################################################################
+#   Function:
+#   Input:
+#   Output:
+#   Desc:
+########################################################################################################################
 
 def main():
     MongoInstance = MongoDBUpdate()
@@ -160,6 +244,12 @@ def main():
     print("Action is ", action)
     MongoInstance.doCallMethod(action)
 
+########################################################################################################################
+#   Function:
+#   Input:
+#   Output:
+#   Desc:
+########################################################################################################################
 
 if __name__=='__main__':
     main()
