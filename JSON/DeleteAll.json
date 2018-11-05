@@ -1,11 +1,7 @@
 {
   "DB":"EMP",
   "Collection":"Employee",
-  "FieldsToAdd":{
-    "Married":"None",
-    "Company":"XYZ",
+  "FieldsToDelete":{
     "Status":"Active"
   }
 }
-
-

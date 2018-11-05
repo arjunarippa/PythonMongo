@@ -4,9 +4,8 @@
   "ConditionField":{
     "Name":"Arjun"
   },
-  "FieldsToAdd":{
-    "Happy":"Yes"
+  "FieldsToUpdate":{
+    "Married":"Marital Status"
   }
 }
-
 
