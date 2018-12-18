@@ -1,0 +1,7 @@
+{
+  "DB":"EMP",
+  "Collection":"Employee",
+  "FieldsToUpdate":{
+    "Married":"Marital Status"
+  }
+}

@@ -4,9 +4,7 @@
   "ConditionField":{
     "Name":"Arjun"
   },
-  "FieldsToAdd":{
+  "FieldsToDelete":{
     "Happy":"Yes"
   }
 }
-
-

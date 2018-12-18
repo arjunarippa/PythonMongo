@@ -27,6 +27,7 @@ UPDATE_FIELD = 'UpdateField'
 UPDATE_VALUE = 'UpdateValue'
 
 
+
 ########################################################################################################################
 #   Class:
 #   Input:
@@ -90,13 +91,12 @@ class MongoDBUpdate():
         fileNamePattern = action + JSON_EXTN
         # TODO
         # Do pattern matching for lower case of json files
-
         for jsonFile in os.listdir(JSON_PATH):
             if jsonFile.endswith(fileNamePattern):
                 return JSON_PATH+jsonFile
-            else:
-                print("The required JSON file is not present in the JSON folder!!")
-                sys.exit(2)
+        else:
+            print("The required JSON file is not present in the JSON folder!!")
+            sys.exit(2)
 
     ####################################################################################################################
     #   Function:
@@ -109,6 +109,7 @@ class MongoDBUpdate():
         print("Inside doMOngoAddForOneDocument")
         self.action = action
         connection = self._createConnection()
+        print(action)
         jsonFile = self._checkIfJsonFileExists(self.action)
         print("Jsonfile is ", jsonFile)
         with open(jsonFile) as addFile:
@@ -129,7 +130,7 @@ class MongoDBUpdate():
             print("key is ", key, " and value is ", value)
             dbInstance.update_many({conditionKey:conditionValue}, {"$set": {key: value}}, True)
 
-        print("Update complete!!")
+        print("Adding complete!!")
 
     ####################################################################################################################
     #   Function:
@@ -164,6 +165,132 @@ class MongoDBUpdate():
             print("key is ", key, " and value is ", value)
             dbInstance.update_many({},{"$set":{key:value}}, True)
 
+        print("Adding complete!!")
+
+    ####################################################################################################################
+    #   Function:
+    #   Input:
+    #   Output:
+    #   Desc:
+    ####################################################################################################################
+
+    def doMongoDeleteOneDocument(self, action):
+        print("Inside doMongoDeleteOneDocument")
+        self.action = action
+        connection = self._createConnection()
+        jsonFile = self._checkIfJsonFileExists(self.action)
+        print("Jsonfile is ", jsonFile)
+        with open(jsonFile) as DelFile:
+            DelData = json.load(DelFile)
+
+        database = DelData['DB']
+        collection = DelData['Collection']
+        dbInstance = connection[database][collection]
+        # print((addData['FieldsToAdd']))
+        # print(addData['FieldsToAdd']['Company'])
+        new_dict = DelData['FieldsToDelete']
+        condition_dict = DelData['ConditionField']
+        for key, value in condition_dict.items():
+            conditionKey = key
+            conditionValue = value
+
+        for key, value in new_dict.items():
+            print("key is ", key, " and value is ", value)
+            dbInstance.update_many({conditionKey: conditionValue}, {"$unset": {key: value}}, True)
+
+        print("Delete complete!!")
+
+    ####################################################################################################################
+    #   Function:
+    #   Input:
+    #   Output:
+    #   Desc:
+    ####################################################################################################################
+    def doMongoDeleteAllDocuments(self,action):
+        print("Inside doMongoDeleteAllDocuments")
+        self.action = action
+        connection = self._createConnection()
+        jsonFile = self._checkIfJsonFileExists(self.action)
+        print("Jsonfile is ", jsonFile)
+        with open(jsonFile) as DelFile:
+            DelData = json.load(DelFile)
+        # print(addData['DB'])
+        # print(addData['Collection'])
+        # TODO
+        # Make the entries generic. They should be read from json file.
+        database = DelData['DB']
+        collection = DelData['Collection']
+        dbInstance = connection[database][collection]
+        # collectionDocuments = dbInstance.find({})
+        # TODO
+        # Need to check if a condition field is required to update all records.
+        # print(collectionDocuments.count())
+        print((DelData['FieldsToDelete']))
+        new_dict = DelData['FieldsToDelete']
+        for key, value in new_dict.items():
+            print("key is ", key, " and value is ", value)
+            dbInstance.update_many({}, {"$unset": {key: value}}, True)
+
+        print("Delete Complete!!")
+    ####################################################################################################################
+    #   Function:
+    #   Input:
+    #   Output:
+    #   Desc:
+    ####################################################################################################################
+    def doMongoUpdateOneField(self, action):
+        print("Inside doMongoUpdateOneField")
+        self.action = action
+        connection = self._createConnection()
+        jsonFile = self._checkIfJsonFileExists(self.action)
+        print("Jsonfile is ", jsonFile)
+        with open(jsonFile) as updFile:
+            UpdData = json.load(updFile)
+
+        database = UpdData['DB']
+        collection = UpdData['Collection']
+        dbInstance = connection[database][collection]
+        # print((addData['FieldsToAdd']))
+        # print(addData['FieldsToAdd']['Company'])
+        new_dict = UpdData['FieldsToUpdate']
+        condition_dict = UpdData['ConditionField']
+        for key, value in condition_dict.items():
+            conditionKey = key
+            conditionValue = value
+
+        for field, new_field in new_dict.items():
+            print("key is ", field, " and value is ", new_field)
+            dbInstance.update_many({conditionKey: conditionValue}, {"$rename": {field: new_field}}, True)
+
+        print("Update complete!!")
+
+
+    ####################################################################################################################
+    #   Function:
+    #   Input:
+    #   Output:
+    #   Desc:
+    ####################################################################################################################
+
+    def doMongoUpdateAllFields(self, action):
+        print("Inside doMongoUpdateAllFields")
+        self.action = action
+        connection = self._createConnection()
+        jsonFile = self._checkIfJsonFileExists(self.action)
+        print("Jsonfile is ", jsonFile)
+        with open(jsonFile) as updFile:
+            UpdData = json.load(updFile)
+
+        database = UpdData['DB']
+        collection = UpdData['Collection']
+        dbInstance = connection[database][collection]
+        # print((addData['FieldsToAdd']))
+        # print(addData['FieldsToAdd']['Company'])
+        new_dict = UpdData['FieldsToUpdate']
+
+        for field, new_field in new_dict.items():
+            print("key is ", field, " and value is ", new_field)
+            dbInstance.update_many({}, {"$rename": {field: new_field}}, True)
         print("Update complete!!")
 
     ####################################################################################################################
@@ -172,33 +299,17 @@ class MongoDBUpdate():
     #   Output:
     #   Desc:
     ####################################################################################################################
-
-    def doMongoDelete(self, action):
-        # TODO
-        pass
-
-    ####################################################################################################################
-    #   Function:
-    #   Input:
-    #   Output:
-    #   Desc:
-    ####################################################################################################################
-
-    def doMongoUpdateField(self, action):
-        # TODO
-        pass
-
-    ####################################################################################################################
-    #   Function:
-    #   Input:
-    #   Output:
-    #   Desc:
-    ####################################################################################################################
-
-    def doMongoUpdateValue(self, action):
-        # TODO
-        pass
-
+    def Func(self,action):
+        Func1 = {
+            'AddAll': self.doMongoAddForAllDocuments,
+            'AddOne': self.doMongoAddForOneDocument,
+            'DeleteAll': self.doMongoDeleteAllDocuments,
+            'DeleteOne': self.doMongoDeleteOneDocument,
+            'UpdateOne': self.doMongoUpdateOneField,
+            'UpdateAll': self.doMongoUpdateAllFields
+        }
+        print(Func1[action])
+        return Func1[action]
     ####################################################################################################################
     #   Function:
     #   Input:
@@ -208,15 +319,7 @@ class MongoDBUpdate():
 
     def doCallMethod(self, action):
         print("in doCallMethod action is ", action)
-        MongoInstance = MongoDBUpdate()
-        return{
-            ADD_ALL:MongoInstance.doMongoAddForAllDocuments(action),
-            ADD_ONE:MongoInstance.doMongoAddForOneDocument(action),
-            DELETE_ALL:MongoInstance.doMongoDelete(action),
-            DELETE_ONE:MongoInstance.doMongoDelete(action),
-            UPDATE_FIELD:MongoInstance.doMongoUpdateField(action),
-            UPDATE_VALUE:MongoInstance.doMongoUpdateValue(action)
-        }[action]
+        return self.Func(action)(action)
         # if action == ADD_ONE:
         #     MongoInstance.doMongoAddForOneDocument(action)
         # elif action == ADD_ALL:
